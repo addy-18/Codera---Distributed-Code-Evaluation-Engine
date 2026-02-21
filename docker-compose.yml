@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  codera-db:
+    image: postgres:16
+    container_name: codera-db
+    environment:
+      POSTGRES_USER: codera
+      POSTGRES_PASSWORD: codera_password
+      POSTGRES_DB: codera
+    ports:
+      - "5433:5432"
+    volumes:
+      - codera-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codera -d codera"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  codera-redis:
+    image: redis:7
+    container_name: codera-redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - codera-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  codera-db-data:
+  codera-redis-data:

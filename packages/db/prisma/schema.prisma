@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Problem {
+  id              String   @id                          // "problem_1"
+  name            String                                // "Two Sum"
+  description     String                                // Markdown description
+  difficulty      String   @default("Easy")
+  constraints     String[] @default([])
+  sampleTestCases Json     @default("[]")               // [{input, expectedOutput}]
+  halfBoilerplate Json     @default("{}")               // {cpp: "...", python: "...", java: "..."}
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@map("problems")
+}
+
+model Submission {
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  problemId   String   @map("problem_id")
+  languageId  Int      @map("language_id")
+  sourceCode  String   @map("source_code")
+  status      String   @default("queued") // queued | running | finished
+  verdict     String?
+  totalTests  Int      @default(0) @map("total_tests")
+  passedTests Int      @default(0) @map("passed_tests")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  results SubmissionResult[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([problemId])
+  @@index([createdAt(sort: Desc)])
+  @@map("submissions")
+}
+
+model SubmissionResult {
+  id            Int      @id @default(autoincrement())
+  submissionId  String   @map("submission_id")
+  testcaseIndex Int      @map("testcase_index")
+  status        String
+  time          String?
+  memory        String?
+  stdout        String?
+  stderr        String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@unique([submissionId, testcaseIndex])
+  @@index([submissionId])
+  @@map("submission_results")
+}

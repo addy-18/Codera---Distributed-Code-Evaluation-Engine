@@ -1,0 +1,26 @@
+{
+  "name": "codera",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Codera Contest-Mode Judge Integration — Monorepo",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:coordinator": "npm run dev --workspace=apps/coordinator",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "build": "npm run build --workspaces --if-present",
+    "db:generate": "npm run db:generate --workspace=packages/db",
+    "db:push": "npm run db:push --workspace=packages/db",
+    "db:migrate": "npm run db:migrate --workspace=packages/db",
+    "db:studio": "npm run db:studio --workspace=packages/db",
+    "clean": "rimraf apps/*/dist packages/*/dist"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,0 +1,12 @@
+apps/api/src/loaders/queue.ts(8,3): error TS2322: Type 'Redis' is not assignable to type 'ConnectionOptions'.
+  Type 'Redis' is not assignable to type 'ClusterOptions | Redis | Cluster'.
+    Type 'import("D:/AG/Codera/Backend/node_modules/ioredis/built/Redis").default' is not assignable to type 'import("D:/AG/Codera/Backend/node_modules/bullmq/node_modules/ioredis/built/Redis").default'.
+      Types of property 'options' are incompatible.
+        Type 'import("D:/AG/Codera/Backend/node_modules/ioredis/built/redis/RedisOptions").RedisOptions' is not assignable to type 'import("D:/AG/Codera/Backend/node_modules/bullmq/node_modules/ioredis/built/redis/RedisOptions").RedisOptions'.
+          Type 'RedisOptions' is not assignable to type 'CommonRedisOptions'.
+            Types of property 'Connector' are incompatible.
+              Type 'import("D:/AG/Codera/Backend/node_modules/ioredis/built/connectors/ConnectorConstructor").default | undefined' is not assignable to type 'import("D:/AG/Codera/Backend/node_modules/bullmq/node_modules/ioredis/built/connectors/ConnectorConstructor").default | undefined'.
+                Type 'import("D:/AG/Codera/Backend/node_modules/ioredis/built/connectors/ConnectorConstructor").default' is not assignable to type 'import("D:/AG/Codera/Backend/node_modules/bullmq/node_modules/ioredis/built/connectors/ConnectorConstructor").default'.
+                  Type 'import("D:/AG/Codera/Backend/node_modules/ioredis/built/connectors/AbstractConnector").default' is not assignable to type 'import("D:/AG/Codera/Backend/node_modules/bullmq/node_modules/ioredis/built/connectors/AbstractConnector").default'.
+                    Property 'connecting' is protected but type 'AbstractConnector' is not a class derived from 'AbstractConnector'.
+apps/api/src/routes/index.ts(1,45): error TS2307: Cannot find module './modules/submission/submission.controller' or its corresponding type declarations.
