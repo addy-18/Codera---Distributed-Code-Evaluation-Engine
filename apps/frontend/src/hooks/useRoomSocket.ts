@@ -16,23 +16,27 @@ interface RoomEvent {
 interface UseRoomSocketProps {
   roomId: string;
   userId: string;
+  onMessage?: (msg: RoomEvent) => void;
 }
 
 interface UseRoomSocketReturn {
   isConnected: boolean;
   participants: RoomParticipant[];
   canEdit: boolean;
-  lastEvent: RoomEvent | null;
   sendMessage: (msg: any) => void;
   setInitialParticipants: (participants: RoomParticipant[]) => void;
 }
 
-export function useRoomSocket({ roomId, userId }: UseRoomSocketProps): UseRoomSocketReturn {
+export function useRoomSocket({ roomId, userId, onMessage }: UseRoomSocketProps): UseRoomSocketReturn {
   const [isConnected, setIsConnected] = useState(false);
   const [participants, setParticipants] = useState<RoomParticipant[]>([]);
   const [canEdit, setCanEdit] = useState(false);
-  const [lastEvent, setLastEvent] = useState<RoomEvent | null>(null);
   const ws = useRef<ReconnectingWebSocket | null>(null);
+  const latestOnMessage = useRef(onMessage);
+
+  useEffect(() => {
+    latestOnMessage.current = onMessage;
+  }, [onMessage]);
 
   useEffect(() => {
     if (!roomId || !userId) return;
@@ -56,7 +60,10 @@ export function useRoomSocket({ roomId, userId }: UseRoomSocketProps): UseRoomSo
       try {
         const data = JSON.parse(event.data) as RoomEvent;
         console.log('[RoomSocket] Received data:', data);
-        setLastEvent(data);
+        
+        if (latestOnMessage.current) {
+          latestOnMessage.current(data);
+        }
 
         switch (data.type) {
           case 'presence_update':
@@ -117,5 +124,5 @@ export function useRoomSocket({ roomId, userId }: UseRoomSocketProps): UseRoomSo
     if (me) setCanEdit(me.canEdit);
   }, [userId]);
 
-  return { isConnected, participants, canEdit, lastEvent, sendMessage, setInitialParticipants };
+  return { isConnected, participants, canEdit, sendMessage, setInitialParticipants };
 }

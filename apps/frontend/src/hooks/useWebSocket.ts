@@ -3,10 +3,14 @@ import type { TestResultEvent, FinalVerdictEvent, StatusUpdateEvent } from '../t
 
 type WebSocketMessage = TestResultEvent | FinalVerdictEvent | StatusUpdateEvent | { type: 'connected' | 'auth_success' | 'subscribed' | 'pong' | 'error' };
 
-export function useWebSocket() {
+export function useWebSocket(onMessage?: (msg: WebSocketMessage) => void) {
   const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
   const ws = useRef<WebSocket | null>(null);
+  const latestOnMessage = useRef(onMessage);
+
+  useEffect(() => {
+    latestOnMessage.current = onMessage;
+  }, [onMessage]);
 
   useEffect(() => {
     // Avoid re-connecting if already connected
@@ -31,7 +35,9 @@ export function useWebSocket() {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        setLastMessage(data);
+        if (latestOnMessage.current) {
+          latestOnMessage.current(data);
+        }
       } catch (e) {
         console.error('WS Parse Error', e);
       }
@@ -53,5 +59,5 @@ export function useWebSocket() {
     }
   }, []);
 
-  return { isConnected, sendMessage, lastMessage };
+  return { isConnected, sendMessage };
 }

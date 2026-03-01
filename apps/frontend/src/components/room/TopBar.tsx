@@ -7,11 +7,13 @@ interface TopBarProps {
   problemName: string;
   difficulty: string;
   isHost: boolean;
-  roomId: string;
+  roomId?: string;
   isRunning: boolean;
   canEdit: boolean;
   onRun: () => void;
   onSubmit: () => void;
+  onStartSession?: () => void;
+  isCreatingRoom?: boolean;
 }
 
 export function TopBar({
@@ -23,10 +25,13 @@ export function TopBar({
   canEdit,
   onRun,
   onSubmit,
+  onStartSession,
+  isCreatingRoom,
 }: TopBarProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyRoomId = () => {
+    if (!roomId) return;
     navigator.clipboard.writeText(roomId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -39,7 +44,7 @@ export function TopBar({
           <ChevronLeft className="w-5 h-5 text-muted group-hover:text-text-main transition-colors" />
         </Link>
         <div className="flex items-center gap-3">
-          <h1 className="font-semibold text-sm md:text-base text-text-main">{problemName}</h1>
+          <h1 className="font-semibold text-sm md:text-[#ffffff] text-[#ffffff]">{problemName}</h1>
           <span className={clsx(
             "px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide",
             difficulty === 'Easy' ? 'bg-success/20 text-success' :
@@ -57,14 +62,28 @@ export function TopBar({
 
       <div className="flex items-center gap-3">
         {/* Share/Room ID */}
-        <button
-          onClick={handleCopyRoomId}
-          className="flex items-center gap-2 px-3 py-1.5 bg-elevated hover:bg-white/5 rounded-md text-xs text-muted transition-colors border border-border"
-          title="Copy Room ID"
-        >
-          {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-          <span className="hidden md:inline font-mono text-text-main/80">{roomId.slice(0, 8)}...</span>
-        </button>
+        {roomId && (
+          <button
+            onClick={handleCopyRoomId}
+            className="flex items-center gap-2 px-3 py-1.5 bg-elevated hover:bg-white/5 rounded-md text-xs text-muted transition-colors border border-border"
+            title="Copy Room ID"
+          >
+            {copied ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+            <span className="hidden md:inline font-mono text-text-main/80">{roomId.slice(0, 8)}...</span>
+          </button>
+        )}
+
+        {/* Start Session (solo mode) */}
+        {onStartSession && (
+          <button
+            onClick={onStartSession}
+            disabled={isCreatingRoom || isRunning}
+            className="active:scale-[0.98] flex items-center gap-2 px-4 py-1.5 bg-accent hover:bg-accent-hover text-white rounded-md text-sm font-medium transition-all disabled:opacity-50 shadow-glow"
+          >
+            {isCreatingRoom ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crown className="w-4 h-4" />}
+            <span className="hidden sm:inline">Collaborate</span>
+          </button>
+        )}
 
         {/* Run */}
         <button

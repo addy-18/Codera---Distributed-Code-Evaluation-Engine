@@ -1,8 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import { Home } from './pages/Home';
-import { Problem } from './pages/Problem';
-import { Room } from './pages/Room';
+import { Workspace } from './pages/Workspace';
 import { Login } from './pages/Login';
 import { Loader2 } from 'lucide-react';
 
@@ -26,12 +25,12 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Home />} />
-      <Route path="/problem/:id" element={<Problem />} />
+      <Route path="/problems/:id" element={<Workspace mode="solo" />} />
       <Route
         path="/room/:roomId"
         element={
           <ProtectedRoute>
-            <Room />
+            <Workspace mode="collaboration" />
           </ProtectedRoute>
         }
       />

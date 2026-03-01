@@ -20,6 +20,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
+    "react-resizable-panels": "^4.7.0",
     "react-router-dom": "^7.13.0",
     "reconnecting-websocket": "^4.4.0",
     "sharedb": "^5.2.2",
